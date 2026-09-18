@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from datetime import date
 
+from django.db.models import Model
+
 from parks.models import DateFactor, Park, WeatherForecast
 
 
@@ -29,9 +31,9 @@ class CrowdPredictionService:
         if date_factor is None:
             date_factor = DateFactor.objects.filter(date=target_date).first()
 
-        if weather is None:
+        if weather is None and isinstance(park, Model) and park.pk is not None:
             weather = WeatherForecast.objects.filter(
-                park=park, date=target_date
+                park_id=park.pk, date=target_date
             ).first()
 
         score = self.BASE_SCORE
